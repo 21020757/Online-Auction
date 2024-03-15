@@ -1,20 +1,32 @@
 package com.example.auction.model;
 
 import jakarta.persistence.*;
+import lombok.*;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
+
+import java.util.Collection;
+import java.util.List;
 
 @Entity(name = "User")
-public class User {
+@Getter
+@Setter
+
+@Builder
+public class User implements UserDetails {
     @Id
-//    @SequenceGenerator(
-//            name = "user_sequence",
-//            sequenceName = "user_sequence",
-//            allocationSize = 1
-//    )
-//    @GeneratedValue(
-//            strategy = GenerationType.SEQUENCE,
-//            generator = "user_sequence"
-//    )
+//    @GeneratedValue(strategy=GenerationType.IDENTITY)
+    @SequenceGenerator(
+            name = "user_sequence",
+            sequenceName = "user_sequence",
+            allocationSize = 1
+    )
+    @GeneratedValue(
+            strategy = GenerationType.SEQUENCE,
+            generator = "user_sequence"
+    )
     @Column(name = "id",
             updatable = false)
     private Long id;
@@ -22,10 +34,6 @@ public class User {
             nullable = false,
             columnDefinition = "TEXT")
     private String fullName;
-    @Column(name = "user_name",
-            nullable = false,
-            columnDefinition = "TEXT")
-    private String username;
     @Column(name = "password",
             nullable = false,
             columnDefinition = "TEXT")
@@ -43,89 +51,52 @@ public class User {
             columnDefinition = "TEXT")
     private String address;
     @Column(name = "role")
+    @ManyToMany
     @Value("USER")
-    private String role;
+    private List<Role> roles;
 
-    public User(long id, String fullName, String username, String password,
-                String email, String phoneNumber, String address, String role) {
+    public User(Long id, String fullName,
+                String password, String email, String phoneNumber,
+                String address, List<Role> roles) {
         this.id = id;
         this.fullName = fullName;
-        this.username = username;
         this.password = password;
         this.email = email;
         this.phoneNumber = phoneNumber;
         this.address = address;
-        this.role = role;
+        this.roles = roles;
     }
 
     public User() {
     }
 
-    public long getId() {
-        return id;
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return List.of(new SimpleGrantedAuthority(this.getRoles().toString()));
     }
 
-    public void setId(long id) {
-        this.id = id;
-    }
-
-    public String getFullName() {
-        return fullName;
-    }
-
-    public void setFullName(String fullName) {
-        this.fullName = fullName;
-    }
-
+    @Override
     public String getUsername() {
-        return username;
+        return this.getEmail();
     }
 
-    public void setUsername(String username) {
-        this.username = username;
+    @Override
+    public boolean isAccountNonExpired() {
+        return true;
     }
 
-    public String getPassword() {
-        return password;
+    @Override
+    public boolean isAccountNonLocked() {
+        return true;
     }
 
-    public void setPassword(String password) {
-        this.password = password;
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return true;
     }
 
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public String getPhoneNumber() {
-        return phoneNumber;
-    }
-
-    public void setPhoneNumber(String phoneNumber) {
-        this.phoneNumber = phoneNumber;
-    }
-
-    public String getAddress() {
-        return address;
-    }
-
-    public void setAddress(String address) {
-        this.address = address;
-    }
-
-    public String getRole() {
-        return role;
-    }
-
-    public void setRole(String role) {
-        this.role = role;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
+    @Override
+    public boolean isEnabled() {
+        return true;
     }
 }

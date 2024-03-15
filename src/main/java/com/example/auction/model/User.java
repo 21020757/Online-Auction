@@ -13,7 +13,6 @@ import java.util.List;
 @Entity(name = "User")
 @Getter
 @Setter
-
 @Builder
 public class User implements UserDetails {
     @Id

@@ -38,6 +38,7 @@ public class RoleServiceImpl implements RoleService {
         roleRepository.saveAllAndFlush(roles);
         List<RoleDTO> roleDTOS = new ArrayList<>();
         for (Role role: roles) {
+            System.out.println(role);
             roleDTOS.add(converter.roleToDTO(role));
         }
         return roleDTOS;

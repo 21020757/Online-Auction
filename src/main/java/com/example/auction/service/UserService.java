@@ -6,6 +6,6 @@ import com.example.auction.dto.UserDTO;
 import java.util.List;
 
 public interface UserService {
-    UserDTO addUser(UserDTO userDTO);
     List<UserDTO> getAllUsers();
+    UserDTO findByEmail(String email);
 }

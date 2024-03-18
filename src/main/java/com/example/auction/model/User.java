@@ -1,5 +1,6 @@
 package com.example.auction.model;
 
+import com.example.auction.dto.UserDTO;
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.beans.factory.annotation.Value;
@@ -38,8 +39,8 @@ public class User implements UserDetails {
             columnDefinition = "TEXT")
     private String password;
     @Column(name = "email",
-            nullable = false,
-            unique = true)
+            nullable = false
+    )
     private String email;
     @Column(name = "phone_number",
             nullable = false,
@@ -50,8 +51,8 @@ public class User implements UserDetails {
             columnDefinition = "TEXT")
     private String address;
     @Column(name = "role")
-    @ManyToMany
     @Value("USER")
+    @ManyToMany(fetch = FetchType.EAGER)
     private List<Role> roles;
 
     public User(Long id, String fullName,

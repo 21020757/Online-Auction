@@ -23,7 +23,7 @@ public class Role {
     @Column(name = "name")
     private String name;
 
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.EAGER)
     private List<User> users;
 
     public Role(Long id, String name, List<User> users) {

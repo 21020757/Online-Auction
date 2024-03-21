@@ -50,20 +50,22 @@ public class User implements UserDetails {
             nullable = false,
             columnDefinition = "TEXT")
     private String address;
+    private boolean isEnabled;
     @Column(name = "role")
     @Value("USER")
     @ManyToMany(fetch = FetchType.EAGER)
     private List<Role> roles;
 
-    public User(Long id, String fullName,
-                String password, String email, String phoneNumber,
-                String address, List<Role> roles) {
+    public User(Long id, String fullName, String password,
+                String email, String phoneNumber, String address,
+                boolean isEnabled, List<Role> roles) {
         this.id = id;
         this.fullName = fullName;
         this.password = password;
         this.email = email;
         this.phoneNumber = phoneNumber;
         this.address = address;
+        this.isEnabled = isEnabled;
         this.roles = roles;
     }
 

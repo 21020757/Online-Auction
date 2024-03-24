@@ -70,26 +70,36 @@ public class AuthenticationService {
         String token = jwtHelper.generateToken(user);
 
         template.opsForValue().set("verificationToken", token);
-        template.opsForValue().set("email", request.getEmail());
-
+        template.opsForValue().set("email", user.getEmail());
         return new LoginResponse(user.getEmail(), token);
     }
 
-    public LoginResponse authenticate(LoginRequest request) {
+    public LoginResponse authenticate(LoginRequest request) throws Exception {
         User user = userRepository.findByEmail(request.getEmail());
 
         if (user == null) {
             throw new UserNotFoundException(ErrorMessages.USER_NOT_FOUND);
+        } else if (!user.isEnabled()) {
+            throw new Exception("User is not enabled please verify!");
+        } else {
+            authenticationManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(
+                            request.getEmail(),
+                            request.getPassword()
+                    )
+            );
         }
-
-        authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(
-                        request.getEmail(),
-                        request.getPassword()
-                )
-        );
-
         String token = jwtHelper.generateToken(user);
+
         return new LoginResponse(user.getEmail(), token);
+    }
+
+    public String validate(String verificationToken) {
+        String email = jwtHelper.extractUsername(verificationToken);
+        User user = userRepository.findByEmail(email);
+
+        user.setEnabled(true);
+        userRepository.save(user);
+        return "User validated " + user.getEmail();
     }
 }

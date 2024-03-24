@@ -44,7 +44,7 @@ public class SecurityConfig {
                 .cors(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(req ->
                         req
-                                .requestMatchers("/register", "/login").permitAll()
+                                .requestMatchers("/register/**", "/login/**", "/verifyEmail/**").permitAll()
                                 .anyRequest().authenticated()
                 )
                 .httpBasic(AbstractHttpConfigurer::disable)

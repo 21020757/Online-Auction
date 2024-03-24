@@ -4,6 +4,7 @@ import com.example.auction.dto.LoginRequest;
 import com.example.auction.dto.LoginResponse;
 import com.example.auction.dto.SignupRequest;
 import com.example.auction.event.RegistrationCompleteEvent;
+import com.example.auction.model.User;
 import com.example.auction.service.AuthenticationService;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.context.ApplicationEventPublisher;
@@ -36,15 +37,14 @@ public class JwtAuthenticationController {
 
     @PostMapping("/login")
     public ResponseEntity<LoginResponse> login(@RequestBody
-                                               LoginRequest loginRequest) {
+                                               LoginRequest loginRequest) throws Exception {
         return ResponseEntity.ok(authenticationService.authenticate(loginRequest));
     }
 
     @GetMapping("/verifyEmail")
-    public String verifyEmail(@RequestParam("token") String token) {
-        String verificationToken = template.opsForValue().get("verificationToken");
-
-        return "";
+    public String verifyEmail(@RequestParam String token) {
+        //validate
+        return authenticationService.validate(token);
     }
 
     public String applicationUrl(HttpServletRequest request) {

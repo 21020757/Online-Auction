@@ -18,5 +18,6 @@ public class UserDTO {
     private String email;
     private String phoneNumber;
     private String address;
+    private boolean isEnabled;
     private List<Role> roles;
 }

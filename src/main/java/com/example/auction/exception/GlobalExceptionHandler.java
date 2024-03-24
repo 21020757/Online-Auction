@@ -1,6 +1,7 @@
 package com.example.auction.exception;
 
 import com.example.auction.exception.err.PasswordsNotMatchException;
+import com.example.auction.exception.err.UserNotFoundException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -34,6 +35,16 @@ public class GlobalExceptionHandler {
                 Objects.nonNull(e.getLocalizedMessage())
                         ? e.getLocalizedMessage() :
                         ErrorMessages.PASSWORD_NOT_MATCH, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(UserNotFoundException.class)
+    public ResponseEntity<Object> userNotFoundExceptionHandler(Exception e) {
+        log.info(e.getLocalizedMessage(), e);
+
+        return buildErrorResponse(
+                Objects.nonNull(e.getLocalizedMessage())
+                        ? e.getLocalizedMessage() :
+                        ErrorMessages.USER_NOT_FOUND, HttpStatus.BAD_REQUEST);
     }
 
     private ResponseEntity<Object> buildErrorResponse(String message, HttpStatus status) {
